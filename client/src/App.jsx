@@ -1,6 +1,9 @@
 import { useEffect, useState } from 'react'
 import { Link, NavLink, Navigate, Route, Routes, useNavigate } from 'react-router-dom'
 import './App.css'
+import TodoPage from './pages/TodoPage.jsx'
+import SteakPage from './pages/SteakPage.jsx'
+import ParametrePage from './pages/ParametrePage.jsx'
 
 function isAuthenticated() {
   return Boolean(localStorage.getItem('token'))
@@ -101,17 +104,7 @@ function DashboardLayout() {
   )
 }
 
-function TodoPage() {
-  return <div>Votre todo list</div>
-}
-
-function SteakPage() {
-  return <div>Steak</div>
-}
-
-function ParametrePage() {
-  return <div>Paramètre</div>
-}
+// pages moved to client/src/pages/*.jsx
 
 export default function App() {
   return (
