@@ -51,4 +51,11 @@ rad.json
 #License-file
 *.flf
 #Test results file
-TestResults.xml
+TestResults.xml.env
+server/.env
+client/.env
+node_modules/
+client/node_modules/
+server/node_modules/
+client/dist/
+.DS_Store
