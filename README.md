@@ -19,6 +19,7 @@ Créer un fichier `.env` dans `server/` avec:
 ```bash
 PORT=4000
 MONGODB_URI=mongodb://localhost:27017/habit_tracker
+JWT_SECRET=votre_secret_ultra_long
 ```
 
 ### Lancer en développement
@@ -32,6 +33,17 @@ npm run dev
 - Frontend: `http://localhost:5173`
 - Backend: `http://localhost:4000`
 - Healthcheck: `GET /api/health`
+
+## Authentification
+
+### Endpoints
+
+- POST `/api/auth/register` body: `{ email, password, name? }`
+- POST `/api/auth/login` body: `{ email, password }`
+
+Réponses: `{ token, user: { id, email, name } }` ou `{ error }`.
+
+Le client stocke le jeton dans `localStorage.token`.
 
 ### Docker (MongoDB)
 
