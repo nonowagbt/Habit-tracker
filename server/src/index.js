@@ -2,6 +2,7 @@ import dotenv from 'dotenv';
 import express from 'express';
 import cors from 'cors';
 import mongoose from 'mongoose';
+import authRouter from './routes/auth.js';
 
 dotenv.config();
 
@@ -27,6 +28,8 @@ async function connectToMongo() {
 app.get('/api/health', (req, res) => {
   res.json({ status: 'ok' });
 });
+
+app.use('/api/auth', authRouter);
 
 app.listen(port, async () => {
   await connectToMongo();
