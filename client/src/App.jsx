@@ -4,6 +4,7 @@ import './App.css'
 import TodoPage from './pages/TodoPage.jsx'
 import SteakPage from './pages/SteakPage.jsx'
 import ParametrePage from './pages/ParametrePage.jsx'
+import DashboardOverview from './pages/DashboardOverview.jsx'
 
 function isAuthenticated() {
   return Boolean(localStorage.getItem('token'))
@@ -42,6 +43,21 @@ function Login() {
         return
       }
       localStorage.setItem('token', data.token)
+      if (data.user) {
+        try { localStorage.setItem('user', JSON.stringify(data.user)) } catch {}
+        // initialize profile if absent
+        try {
+          if (!localStorage.getItem('userProfile')) {
+            localStorage.setItem('userProfile', JSON.stringify({
+              email: data.user.email || '',
+              username: data.user.name || '',
+              name: data.user.name || '',
+              birthdate: '',
+              phone: ''
+            }))
+          }
+        } catch {}
+      }
       navigate('/dashboard', { replace: true })
     } catch (err) {
       setMessage('Erreur de réseau')
@@ -84,22 +100,28 @@ function DashboardLayout() {
     navigate('/login', { replace: true })
   }
   return (
-    <div className="card" style={{ maxWidth: 900, margin: '20px auto' }}>
-      <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
-        <h2>Dashboard</h2>
-        <button onClick={logout}>Se déconnecter</button>
-      </div>
-      <nav style={{ marginBottom: 16 }}>
-        <NavLink to="todo" style={{ marginRight: 8 }}>Todo list</NavLink>
-        <NavLink to="steak" style={{ marginRight: 8 }}>Steak</NavLink>
-        <NavLink to="parametre">Paramètre</NavLink>
-      </nav>
-      <Routes>
-        <Route index element={<Navigate to="todo" replace />} />
+    <div className="min-h-screen">
+      <header className="header glass">
+        <div className="container" style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', padding: '12px 16px' }}>
+          <h1 className="brand">Habit Tracker</h1>
+          <nav className="nav" style={{ fontSize: 14 }}>
+            <NavLink to="/dashboard/overview" className={({isActive}) => `nav-btn ${isActive ? 'nav-btn--active' : ''}`}>Vue d'ensemble</NavLink>
+            <NavLink to="/dashboard/todo" className={({isActive}) => `nav-btn ${isActive ? 'nav-btn--active' : ''}`}>Todo list</NavLink>
+            <NavLink to="/dashboard/steak" className={({isActive}) => `nav-btn ${isActive ? 'nav-btn--active' : ''}`}>Steak</NavLink>
+            <NavLink to="/dashboard/parametre" className={({isActive}) => `nav-btn ${isActive ? 'nav-btn--active' : ''}`}>Paramètre</NavLink>
+          </nav>
+          <button onClick={logout} className="neon-btn" style={{ fontSize: 14 }}>Se déconnecter</button>
+        </div>
+      </header>
+      <main className="container" style={{ paddingTop: 24, paddingBottom: 24 }}>
+        <Routes>
+        <Route index element={<Navigate to="/dashboard/overview" replace />} />
+        <Route path="overview" element={<DashboardOverview />} />
         <Route path="todo" element={<TodoPage />} />
         <Route path="steak" element={<SteakPage />} />
         <Route path="parametre" element={<ParametrePage />} />
-      </Routes>
+        </Routes>
+      </main>
     </div>
   )
 }
