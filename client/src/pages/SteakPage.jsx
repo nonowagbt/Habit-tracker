@@ -69,20 +69,41 @@ export default function SteakPage() {
     <div>
       <h3 className="accent" style={{ fontSize: 20, fontWeight: 600, marginBottom: 16 }}>Streak</h3>
       <div className="muted" style={{ marginBottom: 8 }}>Série actuelle: <strong className="accent">{streak}</strong> jour(s)</div>
-      <div className="card-dark" style={{ display: 'inline-block' }}>
-        <div style={{ display: 'grid', gridTemplateColumns: 'repeat(14, 16px)', gap: 6 }}>
+      <div className="card-dark" style={{ 
+        display: 'inline-block',
+        width: '100%',
+        maxWidth: '100%',
+        overflowX: 'auto'
+      }}>
+        <div className="streak-calendar" style={{ 
+          display: 'grid', 
+          gridTemplateColumns: 'repeat(14, minmax(20px, 1fr))', 
+          gap: 6,
+          minWidth: 'fit-content',
+          width: '100%',
+          maxWidth: '100%'
+        }}>
           {days.map(d => {
             const key = formatDateISO(d)
             const active = activityDates.has(key)
             return (
-              <button key={key} onClick={() => toggleDay(d)} title={key} style={{
-                width: 16,
-                height: 16,
-                borderRadius: 4,
-                border: '1px solid',
-                borderColor: active ? 'rgba(16,185,129,0.6)' : 'rgba(255,255,255,0.10)',
-                background: active ? '#059669' : 'rgba(255,255,255,0.05)'
-              }} />
+              <button 
+                key={key} 
+                onClick={() => toggleDay(d)} 
+                title={key} 
+                style={{
+                  width: '100%',
+                  aspectRatio: '1',
+                  minWidth: 20,
+                  maxWidth: 24,
+                  borderRadius: 4,
+                  border: '1px solid',
+                  borderColor: active ? 'rgba(16,185,129,0.6)' : 'rgba(255,255,255,0.10)',
+                  background: active ? '#059669' : 'rgba(255,255,255,0.05)',
+                  cursor: 'pointer',
+                  transition: 'all 0.2s'
+                }} 
+              />
             )
           })}
         </div>

@@ -71,26 +71,77 @@ export default function TodoPage() {
   return (
     <div>
       <h3 className="accent" style={{ fontSize: 20, fontWeight: 600, marginBottom: 16 }}>Votre todo list</h3>
-      <form onSubmit={addTodo} style={{ display: 'flex', gap: 8, marginBottom: 12 }}>
-        <input className="input" value={title} onChange={e=>setTitle(e.target.value)} placeholder="Ajouter une tâche" />
-        <button type="submit" className="neon-btn">Ajouter</button>
+      <form onSubmit={addTodo} className="todo-form" style={{ 
+        display: 'flex', 
+        gap: 8, 
+        marginBottom: 12
+      }}>
+        <input 
+          className="input" 
+          value={title} 
+          onChange={e=>setTitle(e.target.value)} 
+          placeholder="Ajouter une tâche"
+          style={{ flex: 1, minWidth: 0 }}
+        />
+        <button 
+          type="submit" 
+          className="neon-btn todo-submit-btn"
+          style={{ whiteSpace: 'nowrap' }}
+        >
+          Ajouter
+        </button>
       </form>
       <div className="muted" style={{ fontSize: 14, marginBottom: 8 }}>Restantes: {remaining} / {todos.length}</div>
       {todos.length === 0 ? (
-        <p className="text-gray-500">Aucune tâche pour le moment.</p>
+        <p className="muted">Aucune tâche pour le moment.</p>
       ) : (
-        <ul style={{ display: 'grid', gap: 8 }}>
+        <ul style={{ display: 'grid', gap: 8, padding: 0, margin: 0, listStyle: 'none' }}>
           {todos.map(todo => (
-            <li key={todo.id} className="card-dark" style={{ display: 'flex', alignItems: 'center', gap: 8, padding: '8px 12px' }}>
-              <input style={{ width: 16, height: 16 }} type="checkbox" checked={todo.completed} onChange={() => toggleTodo(todo.id)} />
-              <span style={{ textDecoration: todo.completed ? 'line-through' : 'none', color: todo.completed ? '#9ca3af' : '#e5e7eb', flex: 1 }}>{todo.title}</span>
-              <button style={{ fontSize: 13 }} className="neon-link" onClick={() => removeTodo(todo.id)}>Supprimer</button>
+            <li 
+              key={todo.id} 
+              className="card-dark" 
+              style={{ 
+                display: 'flex', 
+                alignItems: 'center', 
+                gap: 8, 
+                padding: '12px',
+                flexWrap: 'wrap'
+              }}
+            >
+              <input 
+                style={{ width: 18, height: 18, flexShrink: 0 }} 
+                type="checkbox" 
+                checked={todo.completed} 
+                onChange={() => toggleTodo(todo.id)} 
+              />
+              <span style={{ 
+                textDecoration: todo.completed ? 'line-through' : 'none', 
+                color: todo.completed ? '#9ca3af' : '#e5e7eb', 
+                flex: 1,
+                minWidth: 0,
+                wordBreak: 'break-word'
+              }}>
+                {todo.title}
+              </span>
+              <button 
+                style={{ fontSize: 13 }} 
+                className="neon-link" 
+                onClick={() => removeTodo(todo.id)}
+              >
+                Supprimer
+              </button>
             </li>
           ))}
         </ul>
       )}
       <div style={{ marginTop: 12 }}>
-        <button className="neon-btn" onClick={clearCompleted} disabled={!todos.some(t=>t.completed)}>Supprimer les terminées</button>
+        <button 
+          className="neon-btn todo-clear-btn" 
+          onClick={clearCompleted} 
+          disabled={!todos.some(t=>t.completed)}
+        >
+          Supprimer les terminées
+        </button>
       </div>
     </div>
   )

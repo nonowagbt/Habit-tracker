@@ -113,7 +113,7 @@ export default function ParametrePage() {
 
       <section className="card-dark" style={{ marginBottom: 16 }}>
         <h4 style={{ marginTop: 0, marginBottom: 8 }}>Informations du compte</h4>
-        <div style={{ display: 'grid', gap: 8, gridTemplateColumns: '1fr 1fr' }}>
+        <div className="profile-grid" style={{ display: 'grid', gap: 8, gridTemplateColumns: '1fr 1fr' }}>
           <div>
             <label className="muted" style={{ fontSize: 12 }}>Email</label>
             <input className="input" type="email" value={profile.email || ''} onChange={e=>setProfile(p=>({ ...p, email: e.target.value }))} placeholder="vous@exemple.com" />
@@ -159,14 +159,14 @@ export default function ParametrePage() {
 
       <section className="card-dark" style={{ marginBottom: 16, textAlign: 'center' }}>
         <h4 style={{ marginTop: 0, marginBottom: 8 }}>Données</h4>
-        <div style={{ display: 'flex', gap: 8, flexWrap: 'wrap', justifyContent: 'center', alignItems: 'center' }}>
-          <button className="neon-btn" onClick={exportData}>Exporter</button>
-          <label className="neon-btn" style={{ display: 'inline-block', cursor: 'pointer' }}>
+        <div className="data-actions" style={{ display: 'flex', gap: 8, flexWrap: 'wrap', justifyContent: 'center', alignItems: 'center' }}>
+          <button className="neon-btn" onClick={exportData} style={{ flex: '1 1 auto', minWidth: '120px' }}>Exporter</button>
+          <label className="neon-btn" style={{ display: 'inline-block', cursor: 'pointer', flex: '1 1 auto', minWidth: '120px' }}>
             Importer
             <input onChange={onImportFile} type="file" accept="application/json" style={{ display: 'none' }} />
           </label>
-          <button className="neon-btn" onClick={resetTodos}>Réinitialiser todos</button>
-          <button className="neon-btn" onClick={resetStreak}>Réinitialiser streak</button>
+          <button className="neon-btn" onClick={resetTodos} style={{ flex: '1 1 auto', minWidth: '120px' }}>Réinitialiser todos</button>
+          <button className="neon-btn" onClick={resetStreak} style={{ flex: '1 1 auto', minWidth: '120px' }}>Réinitialiser streak</button>
         </div>
       </section>
 
@@ -206,7 +206,7 @@ function ChangePasswordForm() {
   }
 
   return (
-    <form onSubmit={submit} style={{ display: 'grid', gap: 8, maxWidth: 520 }}>
+    <form onSubmit={submit} className="password-form" style={{ display: 'grid', gap: 8, maxWidth: 520, width: '100%' }}>
       <div>
         <label className="muted" style={{ fontSize: 12 }}>Mot de passe actuel</label>
         <input className="input" type="password" value={current} onChange={e=>setCurrent(e.target.value)} placeholder="••••••••" />
@@ -219,9 +219,9 @@ function ChangePasswordForm() {
         <label className="muted" style={{ fontSize: 12 }}>Confirmer le mot de passe</label>
         <input className="input" type="password" value={confirmNext} onChange={e=>setConfirmNext(e.target.value)} placeholder="••••••••" />
       </div>
-      <div style={{ display: 'flex', gap: 8, alignItems: 'center' }}>
-        <button className="neon-btn" type="submit">Mettre à jour</button>
-        {msg && <span className="muted">{msg}</span>}
+      <div className="password-form-actions" style={{ display: 'flex', gap: 8, alignItems: 'center', flexWrap: 'wrap' }}>
+        <button className="neon-btn" type="submit" style={{ flex: '0 0 auto' }}>Mettre à jour</button>
+        {msg && <span className="muted" style={{ fontSize: 13 }}>{msg}</span>}
       </div>
     </form>
   )
