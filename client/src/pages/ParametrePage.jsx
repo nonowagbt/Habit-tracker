@@ -3,6 +3,26 @@ const TODO_STORAGE_KEY = 'todos'
 const ACTIVITY_STORAGE_KEY = 'activityDates'
 const PROFILE_PHOTO_KEY = 'profilePhoto'
 const USER_PROFILE_KEY = 'userProfile'
+const THEME_KEY = 'app_theme'
+
+function getTheme() {
+  try {
+    return localStorage.getItem(THEME_KEY) || 'dark'
+  } catch {
+    return 'dark'
+  }
+}
+
+function applyTheme(theme) {
+  try {
+    localStorage.setItem(THEME_KEY, theme)
+    if (theme === 'light') {
+      document.body.classList.add('light-theme')
+    } else {
+      document.body.classList.remove('light-theme')
+    }
+  } catch {}
+}
 
 function readLocalStorageJSON(key, fallback) {
   try {
@@ -28,10 +48,20 @@ export default function ParametrePage() {
   const [profile, setProfile] = useState(() => {
     try { return JSON.parse(localStorage.getItem(USER_PROFILE_KEY) || '{}') } catch { return {} }
   })
+  const [theme, setTheme] = useState(() => getTheme())
 
   useEffect(() => {
     try { localStorage.setItem(USER_PROFILE_KEY, JSON.stringify(profile)) } catch {}
   }, [profile])
+
+  useEffect(() => {
+    applyTheme(theme)
+  }, [theme])
+
+  function toggleTheme() {
+    const newTheme = theme === 'dark' ? 'light' : 'dark'
+    setTheme(newTheme)
+  }
 
   function onPhotoChange(e) {
     const file = e.target.files?.[0]
@@ -171,7 +201,28 @@ export default function ParametrePage() {
       </section>
 
       <section className="card-dark">
-        <h4 style={{ marginTop: 0, marginBottom: 8 }}>Apparence</h4>
+        <h4 style={{ marginTop: 0, marginBottom: 12 }}>Apparence</h4>
+        <div className="theme-toggle" style={{ marginBottom: 12 }}>
+          <div style={{ flex: 1 }}>
+            <div className="muted" style={{ fontSize: 12, marginBottom: 4 }}>Thème</div>
+            <div style={{ fontSize: 14, color: 'var(--text-primary)' }}>
+              {theme === 'dark' ? 'Sombre' : 'Clair'}
+            </div>
+          </div>
+          <div 
+            className="theme-toggle-switch"
+            onClick={toggleTheme}
+            role="button"
+            tabIndex={0}
+            onKeyDown={(e) => {
+              if (e.key === 'Enter' || e.key === ' ') {
+                e.preventDefault()
+                toggleTheme()
+              }
+            }}
+            aria-label={`Basculer vers le thème ${theme === 'dark' ? 'clair' : 'sombre'}`}
+          />
+        </div>
         <button className="neon-btn" onClick={toggleBackgroundBoost}>Accentuer l'arrière‑plan</button>
       </section>
 
