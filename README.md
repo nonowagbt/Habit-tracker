@@ -106,9 +106,46 @@ docker compose up -d
 
 Accès optionnel à `mongo-express`: `http://localhost:8081`
 
+## Version mobile (PWA)
+
+L'application est disponible en version Progressive Web App (PWA) installable sur mobile.
+
+### Installation sur mobile
+
+**iOS (Safari):**
+1. Ouvrez l'application dans Safari
+2. Appuyez sur le bouton Partager (icône carrée avec flèche)
+3. Sélectionnez "Sur l'écran d'accueil"
+4. L'application sera installée comme une app native
+
+**Android (Chrome):**
+1. Ouvrez l'application dans Chrome
+2. Un popup d'installation peut apparaître automatiquement
+3. Sinon, menu du navigateur (⋮) → "Ajouter à l'écran d'accueil"
+4. L'application sera installée comme une app native
+
+### Fonctionnalités PWA
+
+- ✅ Installation sur l'écran d'accueil
+- ✅ Mode hors ligne (service worker)
+- ✅ Mise à jour automatique
+- ✅ Interface optimisée pour mobile
+- ✅ Support des zones sécurisées (notch)
+- ✅ Thème adaptatif (clair/sombre)
+
+### Configuration PWA
+
+Le plugin `vite-plugin-pwa` est configuré pour générer automatiquement :
+- Service Worker pour le cache
+- Manifest.json pour l'installation
+- Icônes PWA (192x192 et 512x512)
+
+Les icônes sont dans `client/public/`. Vous pouvez les remplacer par vos propres icônes.
+
 ## Scripts
 
 - `npm run dev`: lance client et server en parallèle
-- `npm run build`: build du client
+- `npm run build`: build du client (génère aussi les fichiers PWA)
 - `npm run start`: démarre uniquement l'API
+
 application that will track your habits (sports, sleep, etc.)
