@@ -68,6 +68,34 @@ Le client stocke le jeton dans `localStorage.token`.
 
 L'application supporte l'authentification via Google OAuth 2.0. Le bouton "Se connecter avec Google" apparaît sur la page de login si `VITE_GOOGLE_CLIENT_ID` est configuré.
 
+### Notifications par email
+
+L'application peut envoyer des emails de rappel pour les tâches non complétées.
+
+**Configuration SMTP (dans `server/.env`) :**
+
+```bash
+ENABLE_EMAIL_NOTIFICATIONS=true
+EMAIL_CRON_SCHEDULE=0 9 * * *  # Tous les jours à 9h (format cron)
+SMTP_HOST=smtp.gmail.com
+SMTP_PORT=587
+SMTP_SECURE=false
+SMTP_USER=votre_email@gmail.com
+SMTP_PASS=votre_mot_de_passe_application
+```
+
+**Pour Gmail :**
+1. Activez la validation en 2 étapes sur votre compte Google
+2. Générez un "Mot de passe d'application" : https://myaccount.google.com/apppasswords
+3. Utilisez ce mot de passe dans `SMTP_PASS`
+
+**Format du schedule cron :**
+- `0 9 * * *` = Tous les jours à 9h
+- `0 */6 * * *` = Toutes les 6 heures
+- `0 9 * * 1` = Tous les lundis à 9h
+
+Les emails sont envoyés automatiquement aux utilisateurs ayant des tâches non complétées.
+
 ### Docker (MongoDB)
 
 Lancer MongoDB localement avec Docker Compose:
