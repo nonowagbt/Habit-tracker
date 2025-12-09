@@ -227,6 +227,11 @@ export default function ParametrePage() {
       </section>
 
       <section className="card-dark" style={{ marginTop: 16 }}>
+        <h4 style={{ marginTop: 0, marginBottom: 8 }}>Application mobile</h4>
+        <PWAInstallPrompt />
+      </section>
+
+      <section className="card-dark" style={{ marginTop: 16 }}>
         <h4 style={{ marginTop: 0, marginBottom: 8 }}>Notifications par email</h4>
         <EmailNotificationsSettings />
       </section>
@@ -235,6 +240,79 @@ export default function ParametrePage() {
         <h4 style={{ marginTop: 0, marginBottom: 8 }}>Sécurité</h4>
         <ChangePasswordForm />
       </section>
+    </div>
+  )
+}
+
+function PWAInstallPrompt() {
+  const [installable, setInstallable] = useState(false)
+  const [installed, setInstalled] = useState(false)
+
+  useEffect(() => {
+    // Vérifier si l'app est déjà installée
+    if (window.matchMedia('(display-mode: standalone)').matches || window.navigator.standalone) {
+      setInstalled(true)
+      return
+    }
+
+    // Écouter l'événement beforeinstallprompt
+    const handler = (e) => {
+      e.preventDefault()
+      window.deferredPrompt = e
+      setInstallable(true)
+    }
+
+    window.addEventListener('beforeinstallprompt', handler)
+
+    return () => {
+      window.removeEventListener('beforeinstallprompt', handler)
+    }
+  }, [])
+
+  async function handleInstall() {
+    if (!window.deferredPrompt) {
+      return
+    }
+
+    window.deferredPrompt.prompt()
+    const { outcome } = await window.deferredPrompt.userChoice
+    
+    if (outcome === 'accepted') {
+      setInstallable(false)
+      setInstalled(true)
+    }
+    
+    window.deferredPrompt = null
+  }
+
+  if (installed) {
+    return (
+      <div className="muted" style={{ fontSize: 14, padding: 12, background: 'var(--bg-tertiary)', borderRadius: 6 }}>
+        ✅ Application installée ! Vous pouvez l'utiliser hors ligne.
+      </div>
+    )
+  }
+
+  if (!installable) {
+    return (
+      <div className="muted" style={{ fontSize: 14, padding: 12, background: 'var(--bg-tertiary)', borderRadius: 6 }}>
+        <div style={{ marginBottom: 8 }}>📱 Installez l'application sur votre appareil mobile :</div>
+        <ul style={{ margin: 0, paddingLeft: 20, fontSize: 13 }}>
+          <li><strong>iOS:</strong> Appuyez sur le bouton Partager, puis "Sur l'écran d'accueil"</li>
+          <li><strong>Android:</strong> Menu du navigateur → "Ajouter à l'écran d'accueil"</li>
+        </ul>
+      </div>
+    )
+  }
+
+  return (
+    <div>
+      <div className="muted" style={{ fontSize: 14, marginBottom: 12 }}>
+        Installez l'application pour une meilleure expérience mobile et un accès hors ligne.
+      </div>
+      <button className="neon-btn" onClick={handleInstall} style={{ width: '100%' }}>
+        📱 Installer l'application
+      </button>
     </div>
   )
 }
