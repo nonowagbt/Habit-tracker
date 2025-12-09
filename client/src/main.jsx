@@ -12,6 +12,28 @@ if (savedTheme === 'light') {
   document.body.classList.remove('light-theme')
 }
 
+// PWA: Register service worker
+if ('serviceWorker' in navigator) {
+  window.addEventListener('load', () => {
+    navigator.serviceWorker.register('/sw.js')
+      .then((registration) => {
+        console.log('SW registered: ', registration)
+      })
+      .catch((registrationError) => {
+        console.log('SW registration failed: ', registrationError)
+      })
+  })
+}
+
+// PWA: Handle install prompt
+let deferredPrompt
+window.addEventListener('beforeinstallprompt', (e) => {
+  e.preventDefault()
+  deferredPrompt = e
+  // Vous pouvez afficher un bouton "Installer l'app" ici
+  console.log('PWA install prompt available')
+})
+
 createRoot(document.getElementById('root')).render(
   <StrictMode>
     <BrowserRouter>
