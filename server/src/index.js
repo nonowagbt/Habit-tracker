@@ -3,6 +3,8 @@ import express from 'express';
 import cors from 'cors';
 import mongoose from 'mongoose';
 import authRouter from './routes/auth.js';
+import todosRouter from './routes/todos.js';
+import { startNotificationService } from './services/notificationService.js';
 
 dotenv.config();
 
@@ -30,10 +32,14 @@ app.get('/api/health', (req, res) => {
 });
 
 app.use('/api/auth', authRouter);
+app.use('/api/todos', todosRouter);
 
 app.listen(port, async () => {
   await connectToMongo();
   console.log(`API listening on http://localhost:${port}`);
+  
+  // Démarrer le service de notifications
+  startNotificationService();
 });
 
 
