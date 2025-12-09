@@ -227,9 +227,92 @@ export default function ParametrePage() {
       </section>
 
       <section className="card-dark" style={{ marginTop: 16 }}>
+        <h4 style={{ marginTop: 0, marginBottom: 8 }}>Notifications par email</h4>
+        <EmailNotificationsSettings />
+      </section>
+
+      <section className="card-dark" style={{ marginTop: 16 }}>
         <h4 style={{ marginTop: 0, marginBottom: 8 }}>Sécurité</h4>
         <ChangePasswordForm />
       </section>
+    </div>
+  )
+}
+
+function EmailNotificationsSettings() {
+  const [enabled, setEnabled] = useState(() => {
+    try {
+      return localStorage.getItem('emailNotificationsEnabled') === 'true'
+    } catch {
+      return false
+    }
+  })
+
+  useEffect(() => {
+    try {
+      localStorage.setItem('emailNotificationsEnabled', enabled.toString())
+    } catch {}
+  }, [enabled])
+
+  async function testEmail() {
+    try {
+      const token = localStorage.getItem('token')
+      if (!token) {
+        alert('Vous devez être connecté pour tester l\'envoi d\'email')
+        return
+      }
+
+      const res = await fetch('http://localhost:4000/api/todos/test-email', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          'Authorization': `Bearer ${token}`
+        }
+      })
+
+      const data = await res.json()
+      if (res.ok) {
+        alert('Email de test envoyé avec succès ! Vérifiez votre boîte de réception.')
+      } else {
+        alert(data.error || 'Erreur lors de l\'envoi de l\'email')
+      }
+    } catch (err) {
+      alert('Erreur de connexion au serveur')
+    }
+  }
+
+  return (
+    <div style={{ display: 'grid', gap: 12 }}>
+      <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
+        <div>
+          <div style={{ fontSize: 14, fontWeight: 500, marginBottom: 4 }}>Activer les rappels par email</div>
+          <div className="muted" style={{ fontSize: 12 }}>
+            Recevez un email quotidien si vous avez des tâches non complétées
+          </div>
+        </div>
+        <label style={{ position: 'relative', display: 'inline-block', width: 52, height: 28 }}>
+          <input
+            type="checkbox"
+            checked={enabled}
+            onChange={(e) => setEnabled(e.target.checked)}
+            style={{ opacity: 0, width: 0, height: 0 }}
+          />
+          <span className="theme-toggle-switch" style={{ cursor: 'pointer' }} />
+        </label>
+      </div>
+      
+      <div className="muted" style={{ fontSize: 12, padding: 12, background: 'var(--bg-tertiary)', borderRadius: 6 }}>
+        <strong>Note :</strong> Les notifications sont envoyées automatiquement tous les jours à 9h (heure configurée côté serveur). 
+        Assurez-vous que votre email est correctement configuré dans les paramètres du compte.
+      </div>
+
+      <button 
+        className="neon-btn" 
+        onClick={testEmail}
+        style={{ width: '100%' }}
+      >
+        Envoyer un email de test
+      </button>
     </div>
   )
 }
