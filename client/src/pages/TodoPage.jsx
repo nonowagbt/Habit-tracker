@@ -30,7 +30,28 @@ export default function TodoPage() {
 
   useEffect(() => {
     writeLocalStorageJSON(TODO_STORAGE_KEY, todos)
+    // Synchroniser avec le serveur
+    syncTodosToServer(todos)
   }, [todos])
+
+  async function syncTodosToServer(todosList) {
+    try {
+      const token = localStorage.getItem('token')
+      if (!token) return
+
+      await fetch('http://localhost:4000/api/todos/sync', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          'Authorization': `Bearer ${token}`
+        },
+        body: JSON.stringify({ todos: todosList })
+      })
+    } catch (err) {
+      // Silently fail - les todos restent dans localStorage
+      console.error('Failed to sync todos:', err)
+    }
+  }
 
   const remaining = useMemo(() => todos.filter(t => !t.completed).length, [todos])
 
