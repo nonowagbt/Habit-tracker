@@ -72,6 +72,102 @@ router.get('/', async (req, res) => {
   }
 });
 
+// Créer un nouveau todo
+router.post('/', async (req, res) => {
+  try {
+    const userId = getUserIdFromToken(req);
+    if (!userId) {
+      return res.status(401).json({ error: 'unauthorized' });
+    }
+
+    const { title } = req.body;
+    if (!title || !title.trim()) {
+      return res.status(400).json({ error: 'title is required' });
+    }
+
+    const todo = await Todo.create({
+      userId,
+      title: title.trim(),
+      completed: false,
+      createdAt: new Date(),
+    });
+
+    return res.status(201).json({ todo });
+  } catch (err) {
+    console.error('Create todo error:', err);
+    return res.status(500).json({ error: 'internal_error' });
+  }
+});
+
+// Mettre à jour un todo (pour toggle completed)
+router.put('/:id', async (req, res) => {
+  try {
+    const userId = getUserIdFromToken(req);
+    if (!userId) {
+      return res.status(401).json({ error: 'unauthorized' });
+    }
+
+    const { id } = req.params;
+    const { completed, title } = req.body;
+
+    // Chercher le todo par ID et userId pour s'assurer qu'il appartient à l'utilisateur
+    let todo = await Todo.findOne({ _id: id, userId });
+    
+    // Si le todo n'existe pas, le créer (au cas où il n'aurait pas été sauvegardé)
+    if (!todo) {
+      if (!title) {
+        return res.status(404).json({ error: 'todo_not_found' });
+      }
+      // Créer le todo s'il n'existe pas encore
+      todo = await Todo.create({
+        userId,
+        title: title.trim(),
+        completed: completed || false,
+        completedAt: completed ? new Date() : undefined,
+        createdAt: new Date(),
+      });
+      return res.json({ todo });
+    }
+
+    // Mettre à jour le todo
+    if (typeof completed === 'boolean') {
+      todo.completed = completed;
+      todo.completedAt = completed ? new Date() : undefined;
+    }
+    if (title && title.trim()) {
+      todo.title = title.trim();
+    }
+
+    await todo.save();
+    return res.json({ todo });
+  } catch (err) {
+    console.error('Update todo error:', err);
+    return res.status(500).json({ error: 'internal_error' });
+  }
+});
+
+// Supprimer un todo
+router.delete('/:id', async (req, res) => {
+  try {
+    const userId = getUserIdFromToken(req);
+    if (!userId) {
+      return res.status(401).json({ error: 'unauthorized' });
+    }
+
+    const { id } = req.params;
+    const todo = await Todo.findOneAndDelete({ _id: id, userId });
+    
+    if (!todo) {
+      return res.status(404).json({ error: 'todo_not_found' });
+    }
+
+    return res.json({ success: true });
+  } catch (err) {
+    console.error('Delete todo error:', err);
+    return res.status(500).json({ error: 'internal_error' });
+  }
+});
+
 // Envoyer un email de test
 router.post('/test-email', async (req, res) => {
   try {
